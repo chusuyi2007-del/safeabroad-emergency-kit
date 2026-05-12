@@ -20,8 +20,11 @@ export type WorkspaceField = {
   section: "basic" | "location" | "medical" | "contacts" | "rights";
   value: string;
   required?: boolean;
+  important?: boolean;
   source: FieldSource;
   status: FieldStatus;
+  doubleChecked?: boolean;
+  doubleCheckedAt?: string;
   updatedAt: string;
 };
 

@@ -6,15 +6,18 @@ import { Edit3 } from "lucide-react";
 import { Button } from "@/components/Button";
 import { DeleteKitButton } from "@/components/DeleteKitButton";
 import { Notice } from "@/components/Notice";
+import { VoiceInputButton } from "@/components/VoiceInputButton";
 import { saveKit } from "@/lib/kit-store";
 import type { FieldStatus, KitRecord, WorkspaceField } from "@/lib/types";
 import {
   completionPercent,
   ensureWorkspace,
+  importantNeedingDoubleCheck,
   requiredMissing,
   sectionLabels,
   sourceLabels,
   statusLabels,
+  toggleDoubleCheck,
   updateWorkspaceField,
   workspaceFields
 } from "@/lib/workspace";
@@ -35,10 +38,12 @@ function statusTone(status: FieldStatus) {
 
 function FieldRow({
   field,
-  onChange
+  onChange,
+  onDoubleCheck
 }: {
   field: WorkspaceField;
   onChange: (fieldId: string, patch: Partial<Pick<WorkspaceField, "value" | "status">>) => void;
+  onDoubleCheck: (fieldId: string, checked: boolean) => void;
 }) {
   const [editing, setEditing] = useState(false);
 
@@ -49,19 +54,28 @@ function FieldRow({
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="font-bold text-ink">{field.label}</h3>
             {field.required ? <span className="rounded-md bg-red-50 px-2 py-1 text-xs font-bold text-red-700">必填</span> : null}
+            {field.important ? <span className="rounded-md bg-amber-50 px-2 py-1 text-xs font-bold text-amber-800">重要信息</span> : null}
           </div>
           {editing ? (
+            <>
             <textarea
               className="mt-3 min-h-24 w-full rounded-md border border-line bg-paper/60 px-3 py-2 outline-none focus:border-calm focus:ring-4 focus:ring-teal-100"
               onChange={(event) => onChange(field.id, { value: event.target.value })}
               value={field.value}
             />
+            <VoiceInputButton compact onText={(text) => onChange(field.id, { value: field.value ? `${field.value} ${text}` : text })} />
+            </>
           ) : (
             <p className="mt-2 whitespace-pre-wrap text-base leading-7 text-gray-800">{field.value || "未填写"}</p>
           )}
           <div className="mt-3 flex flex-wrap gap-2 text-xs font-bold">
             <span className="rounded-md border border-line bg-paper px-2 py-1">来源：{sourceLabels[field.source]}</span>
             <span className={`rounded-md border px-2 py-1 ${statusTone(field.status)}`}>状态：{statusLabels[field.status]}</span>
+            {field.important ? (
+              <span className={`rounded-md border px-2 py-1 ${field.doubleChecked ? "border-teal-200 bg-mist text-calm" : "border-amber-200 bg-[#fff8e8] text-amber-900"}`}>
+                Double check：{field.doubleChecked ? "已核对" : "待核对"}
+              </span>
+            ) : null}
           </div>
         </div>
         <button className="inline-flex items-center justify-center gap-2 rounded-md border border-line bg-white px-3 py-2 text-sm font-bold text-calm hover:bg-mist" onClick={() => setEditing(!editing)} type="button">
@@ -83,6 +97,22 @@ function FieldRow({
           </button>
         ))}
       </div>
+      {field.important ? (
+        <div className="mt-3 rounded-md border border-line bg-paper p-3">
+          <p className="text-sm leading-6 text-gray-700">
+            请和信息来源方再核对一次。姓名、地址、电话、过敏和用药等关键信息建议逐字确认。
+          </p>
+          <button
+            className={`mt-3 rounded-md border px-3 py-2 text-sm font-bold ${
+              field.doubleChecked ? "border-line bg-white text-gray-700" : "border-calm bg-calm text-white"
+            }`}
+            onClick={() => onDoubleCheck(field.id, !field.doubleChecked)}
+            type="button"
+          >
+            {field.doubleChecked ? "取消 double check" : "完成 double check"}
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -93,6 +123,7 @@ export function KitWorkspaceEditor({ initialKit }: { initialKit: KitRecord }) {
   const [saved, setSaved] = useState(false);
   const fields = useMemo(() => workspaceFields(kit), [kit]);
   const missing = useMemo(() => requiredMissing(kit), [kit]);
+  const needsDoubleCheck = useMemo(() => importantNeedingDoubleCheck(kit), [kit]);
   const progress = completionPercent(kit);
 
   const grouped = useMemo(
@@ -110,6 +141,11 @@ export function KitWorkspaceEditor({ initialKit }: { initialKit: KitRecord }) {
   function updateField(fieldId: string, patch: Partial<Pick<WorkspaceField, "value" | "status">>) {
     setSaved(false);
     setKit((current) => updateWorkspaceField(current, fieldId, patch));
+  }
+
+  function updateDoubleCheck(fieldId: string, checked: boolean) {
+    setSaved(false);
+    setKit((current) => toggleDoubleCheck(current, fieldId, checked));
   }
 
   async function save() {
@@ -154,12 +190,19 @@ export function KitWorkspaceEditor({ initialKit }: { initialKit: KitRecord }) {
           </div>
         </div>
         <div className="mt-5 rounded-md border border-line bg-paper p-4 text-sm font-semibold leading-6 text-gray-700">
-            {missing.length ? (
-              <p>缺少必填信息：{missing.map((field) => field.label).join("、")}</p>
-            ) : (
-              <p>必填信息已齐全。仍建议学生、家长和医生分别确认相关内容。</p>
-            )}
-          </div>
+          {missing.length ? (
+            <p>缺少必填信息：{missing.map((field) => field.label).join("、")}</p>
+          ) : (
+            <p>必填信息已齐全。仍建议学生、家长和医生分别确认相关内容。</p>
+          )}
+          {needsDoubleCheck.length ? (
+            <p className="mt-2 text-amber-900">
+              重要信息待 double check：{needsDoubleCheck.map((field) => field.label).join("、")}
+            </p>
+          ) : (
+            <p className="mt-2 text-calm">已填写的重要信息都完成了 double check。</p>
+          )}
+        </div>
       </section>
 
       <Notice />
@@ -171,7 +214,7 @@ export function KitWorkspaceEditor({ initialKit }: { initialKit: KitRecord }) {
           </div>
           <div className="grid gap-3">
             {grouped[section].map((field) => (
-              <FieldRow field={field} key={field.id} onChange={updateField} />
+              <FieldRow field={field} key={field.id} onChange={updateField} onDoubleCheck={updateDoubleCheck} />
             ))}
           </div>
         </section>

@@ -1,4 +1,6 @@
 import type { DetailChoice, DetailField } from "@/lib/types";
+import { VoiceInputButton } from "@/components/VoiceInputButton";
+import { useId } from "react";
 
 export function Field({
   label,
@@ -15,20 +17,22 @@ export function Field({
   textarea?: boolean;
   placeholder?: string;
 }) {
+  const id = useId();
   const className =
     "mt-2 w-full rounded-md border border-line bg-white/95 px-4 py-3 text-base shadow-sm outline-none transition focus:border-calm focus:ring-4 focus:ring-teal-100";
 
   return (
-    <label className="block">
-      <span className="text-sm font-semibold text-ink">
+    <div>
+      <label className="text-sm font-semibold text-ink" htmlFor={id}>
         {label} {required ? <span className="text-red-600">*</span> : null}
-      </span>
+      </label>
       {textarea ? (
-        <textarea className={`${className} min-h-28`} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} value={value} />
+        <textarea className={`${className} min-h-28`} id={id} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} value={value} />
       ) : (
-        <input className={className} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} required={required} value={value} />
+        <input className={className} id={id} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} required={required} value={value} />
       )}
-    </label>
+      <VoiceInputButton onText={(text) => onChange(value ? `${value} ${text}` : text)} />
+    </div>
   );
 }
 
@@ -66,12 +70,15 @@ export function DetailChoiceField({
         ))}
       </div>
       {value.choice === "details" ? (
+        <>
         <textarea
           className="mt-2 min-h-24 w-full rounded-md border border-line bg-white/95 px-4 py-3 shadow-sm outline-none transition focus:border-calm focus:ring-4 focus:ring-teal-100"
           onChange={(event) => onChange({ ...value, details: event.target.value })}
           placeholder="请填写英文或中文细节 / Add details"
           value={value.details ?? ""}
         />
+        <VoiceInputButton onText={(text) => onChange({ ...value, details: value.details ? `${value.details} ${text}` : text })} />
+        </>
       ) : null}
     </div>
   );

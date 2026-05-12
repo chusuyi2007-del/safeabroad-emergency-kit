@@ -5,6 +5,7 @@ type FieldConfig = {
   label: string;
   section: WorkspaceField["section"];
   required?: boolean;
+  important?: boolean;
   getValue: (kit: KitRecord) => string;
   source: FieldSource;
   status: FieldStatus;
@@ -50,6 +51,7 @@ const fieldConfigs: FieldConfig[] = [
     label: "学生英文名",
     section: "basic",
     required: true,
+    important: true,
     source: "parent",
     status: "needs_student_confirmation",
     getValue: (kit) => kit.parent.studentEnglishName
@@ -76,6 +78,7 @@ const fieldConfigs: FieldConfig[] = [
     label: "学校",
     section: "location",
     required: true,
+    important: true,
     source: "student",
     status: "confirmed",
     getValue: (kit) => kit.student.school
@@ -85,6 +88,7 @@ const fieldConfigs: FieldConfig[] = [
     label: "宿舍/公寓地址",
     section: "location",
     required: true,
+    important: true,
     source: "student",
     status: "confirmed",
     getValue: (kit) => kit.student.address
@@ -93,6 +97,7 @@ const fieldConfigs: FieldConfig[] = [
     id: "floorRoom",
     label: "楼层/房间",
     section: "location",
+    important: true,
     source: "student",
     status: "confirmed",
     getValue: (kit) => kit.student.floorRoom
@@ -101,6 +106,7 @@ const fieldConfigs: FieldConfig[] = [
     id: "landmark",
     label: "附近地标",
     section: "location",
+    important: true,
     source: "student",
     status: "confirmed",
     getValue: (kit) => kit.student.landmark
@@ -109,6 +115,7 @@ const fieldConfigs: FieldConfig[] = [
     id: "allergies",
     label: "过敏",
     section: "medical",
+    important: true,
     source: "parent",
     status: "doctor_should_verify",
     getValue: (kit) => detailToText(kit.parent.allergies, "No known allergies")
@@ -117,6 +124,7 @@ const fieldConfigs: FieldConfig[] = [
     id: "conditions",
     label: "既往或当前疾病",
     section: "medical",
+    important: true,
     source: "parent",
     status: "doctor_should_verify",
     getValue: (kit) => detailToText(kit.parent.conditions)
@@ -125,6 +133,7 @@ const fieldConfigs: FieldConfig[] = [
     id: "surgeries",
     label: "手术史",
     section: "medical",
+    important: true,
     source: "parent",
     status: "doctor_should_verify",
     getValue: (kit) => detailToText(kit.parent.surgeries)
@@ -133,6 +142,7 @@ const fieldConfigs: FieldConfig[] = [
     id: "erHistory",
     label: "急诊或 urgent care 经历",
     section: "medical",
+    important: true,
     source: "parent",
     status: "doctor_should_verify",
     getValue: (kit) => kit.parent.erHistory ?? ""
@@ -141,6 +151,7 @@ const fieldConfigs: FieldConfig[] = [
     id: "medications",
     label: "当前用药",
     section: "medical",
+    important: true,
     source: "student",
     status: "doctor_should_verify",
     getValue: (kit) => detailToText(kit.student.medications)
@@ -150,6 +161,7 @@ const fieldConfigs: FieldConfig[] = [
     label: "家庭紧急联系人",
     section: "contacts",
     required: true,
+    important: true,
     source: "parent",
     status: "confirmed",
     getValue: (kit) => [kit.parent.familyContactName, kit.parent.familyContactPhone].filter(Boolean).join(" / ")
@@ -159,6 +171,7 @@ const fieldConfigs: FieldConfig[] = [
     label: "美国紧急联系人",
     section: "contacts",
     required: true,
+    important: true,
     source: "student",
     status: "confirmed",
     getValue: (kit) => [kit.student.usContactName, kit.student.usContactPhone].filter(Boolean).join(" / ")
@@ -168,6 +181,7 @@ const fieldConfigs: FieldConfig[] = [
     label: "学生美国手机号",
     section: "contacts",
     required: true,
+    important: true,
     source: "student",
     status: "confirmed",
     getValue: (kit) => kit.student.usPhone
@@ -215,9 +229,12 @@ export function ensureWorkspace(kit: KitRecord): KitRecord {
       label: config.label,
       section: config.section,
       required: config.required,
+      important: config.important,
       value: existing?.value?.trim() ? existing.value : value,
       source: existing?.source ?? config.source,
       status: existing?.status ?? status,
+      doubleChecked: existing?.doubleChecked ?? false,
+      doubleCheckedAt: existing?.doubleCheckedAt,
       updatedAt: existing?.updatedAt ?? now
     };
   }
@@ -240,6 +257,7 @@ export function updateWorkspaceField(
   const hydrated = ensureWorkspace(kit);
   const field = hydrated.workspace.fields[fieldId];
   if (!field) return hydrated;
+  const valueChanged = patch.value !== undefined && patch.value !== field.value;
 
   return {
     ...hydrated,
@@ -250,6 +268,30 @@ export function updateWorkspaceField(
         [fieldId]: {
           ...field,
           ...patch,
+          doubleChecked: valueChanged ? false : field.doubleChecked,
+          doubleCheckedAt: valueChanged ? undefined : field.doubleCheckedAt,
+          updatedAt: new Date().toISOString()
+        }
+      }
+    }
+  };
+}
+
+export function toggleDoubleCheck(kit: KitRecord, fieldId: string, checked: boolean): KitRecord {
+  const hydrated = ensureWorkspace(kit);
+  const field = hydrated.workspace.fields[fieldId];
+  if (!field) return hydrated;
+
+  return {
+    ...hydrated,
+    workspace: {
+      ...hydrated.workspace,
+      fields: {
+        ...hydrated.workspace.fields,
+        [fieldId]: {
+          ...field,
+          doubleChecked: checked,
+          doubleCheckedAt: checked ? new Date().toISOString() : undefined,
           updatedAt: new Date().toISOString()
         }
       }
@@ -263,6 +305,12 @@ export function workspaceFields(kit: KitRecord): WorkspaceField[] {
 
 export function requiredMissing(kit: KitRecord): WorkspaceField[] {
   return workspaceFields(kit).filter((field) => field.required && !field.value.trim());
+}
+
+export function importantNeedingDoubleCheck(kit: KitRecord): WorkspaceField[] {
+  return workspaceFields(kit).filter(
+    (field) => field.important && field.value.trim() && !field.doubleChecked
+  );
 }
 
 export function completionPercent(kit: KitRecord): number {
