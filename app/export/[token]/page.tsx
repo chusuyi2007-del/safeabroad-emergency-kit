@@ -74,6 +74,9 @@ function ExportContent({ kit }: { kit: KitRecord }) {
         <div className="mx-auto max-w-3xl">
           <h1 className="text-3xl font-bold text-ink">导出应急包</h1>
           <p className="mt-2 text-gray-700">可分别导出 PNG，或合并为一个 PDF。导出后可删除临时数据。</p>
+          <p className="mt-2 text-sm leading-6 text-gray-600">
+            PNG 适合单张保存到相册或发给联系人；PDF 适合打印或存在云盘。导出文件可能包含敏感信息，请只保存到可信设备。
+          </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button disabled={busy} onClick={exportPngs}>{busy ? "正在导出..." : "导出每张 PNG"}</Button>
@@ -86,11 +89,13 @@ function ExportContent({ kit }: { kit: KitRecord }) {
           ))}
           <article className="card-export rounded-md border border-line bg-white p-5" id="export-lock">
             <p className="text-sm font-bold uppercase tracking-wide text-calm">Lock-screen Card</p>
+            <p className="mt-2 text-sm leading-6 text-gray-600">只包含最少信息，适合放在手机锁屏、Medical ID 或紧急备注里。</p>
             <p className="mt-4 text-2xl font-bold leading-9">{lockScreenText(kit)}</p>
             <p className="mt-5 text-sm text-gray-500">Last updated: {updatedDate(kit)}</p>
           </article>
           <article className="card-export rounded-md border border-line bg-white p-5" id="export-wallet">
             <p className="text-sm font-bold uppercase tracking-wide text-calm">Printable Wallet Card</p>
+            <p className="mt-2 text-sm leading-6 text-gray-600">适合打印后放在钱包、学生证套或随身包里。请定期更新。</p>
             <p className="mt-3 text-lg font-semibold">Name: {kit.parent.studentEnglishName || "Student"}</p>
             <p className="mt-2">Interpreter: Mandarin Chinese</p>
             <p>Emergency contact: {kit.student.usContactName || kit.parent.familyContactName || "Contact"} / {kit.student.usContactPhone || kit.parent.familyContactPhone || "Phone"}</p>
@@ -106,6 +111,7 @@ function ExportContent({ kit }: { kit: KitRecord }) {
               <p>Medications: Use the current medications text from the ER Medical Summary Card.</p>
               <p>Emergency Contacts: Add {kit.student.usContactName || kit.parent.familyContactName || "your emergency contact"} and phone {kit.student.usContactPhone || kit.parent.familyContactPhone || "phone number"}.</p>
               <p>中文说明：打开健康 App → 头像 → 医疗急救卡，复制以上英文摘要和紧急联系人。</p>
+              <p>提醒：Medical ID 不适合放护照号、SSN、完整保险号或完整医疗文件。</p>
             </div>
             <p className="mt-5 text-sm text-gray-500">Last updated: {updatedDate(kit)}</p>
           </article>

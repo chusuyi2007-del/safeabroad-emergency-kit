@@ -103,7 +103,7 @@ function FieldRow({
       {field.important ? (
         <div className="mt-3 rounded-md border border-line bg-paper p-3">
           <p className="text-sm leading-6 text-gray-700">
-            请和信息来源方再核对一次。姓名、地址、电话、过敏和用药等关键信息建议逐字确认。
+            Double check 的意思是：请和信息来源方再核对一次，确认拼写、数字、地址、剂量没有错。姓名、地址、电话、过敏和用药等关键信息建议逐字确认。
           </p>
           <button
             className={`mt-3 rounded-md border px-3 py-2 text-sm font-bold ${
@@ -226,6 +226,9 @@ export function KitWorkspaceEditor({ initialKit }: { initialKit: KitRecord }) {
           ) : (
             <p className="mt-2 text-calm">已填写的重要信息都完成了 double check。</p>
           )}
+          <p className="mt-2 text-gray-600">
+            建议先把缺失信息补齐，再让家长和学生分别核对自己更了解的部分。
+          </p>
         </div>
       </section>
 

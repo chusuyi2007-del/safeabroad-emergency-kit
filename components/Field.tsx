@@ -8,7 +8,8 @@ export function Field({
   onChange,
   required = false,
   textarea = false,
-  placeholder
+  placeholder,
+  help
 }: {
   label: string;
   value: string;
@@ -16,6 +17,7 @@ export function Field({
   required?: boolean;
   textarea?: boolean;
   placeholder?: string;
+  help?: string;
 }) {
   const id = useId();
   const className =
@@ -26,6 +28,7 @@ export function Field({
       <label className="text-sm font-semibold text-ink" htmlFor={id}>
         {label} {required ? <span className="text-red-600">*</span> : null}
       </label>
+      {help ? <p className="mt-1 text-sm leading-6 text-gray-600">{help}</p> : null}
       {textarea ? (
         <textarea className={`${className} min-h-28`} id={id} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} value={value} />
       ) : (
@@ -40,12 +43,14 @@ export function DetailChoiceField({
   label,
   value,
   noneLabel,
-  onChange
+  onChange,
+  help
 }: {
   label: string;
   value: DetailField;
   noneLabel: string;
   onChange: (value: DetailField) => void;
+  help?: string;
 }) {
   const options: Array<[DetailChoice, string]> = [
     ["none", noneLabel],
@@ -56,6 +61,7 @@ export function DetailChoiceField({
   return (
     <div>
       <p className="text-sm font-semibold text-ink">{label}</p>
+      {help ? <p className="mt-1 text-sm leading-6 text-gray-600">{help}</p> : null}
       <div className="mt-2 grid gap-2">
         {options.map(([choice, text]) => (
           <label className="flex items-center gap-3 rounded-md border border-line bg-white p-3" key={choice}>

@@ -45,6 +45,9 @@ export function SharedKitView({ kit }: { kit: KitRecord }) {
         <p className="mt-4 leading-7 text-gray-700">
           本页面只用于整理和沟通应急信息，不替代 911、医疗服务、法律建议、律师、医生、医院或学校官方资源。
         </p>
+        <p className="mt-2 text-sm leading-6 text-gray-600">
+          可以把这个页面收藏到手机浏览器，或只分享给可信任的家人、室友、朋友。页面里可能包含住址、电话和医疗沟通信息。
+        </p>
         <div className="mt-5 flex flex-col gap-3 sm:flex-row">
           <button
             className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-calm bg-calm px-5 py-3 font-semibold text-white"
@@ -59,6 +62,9 @@ export function SharedKitView({ kit }: { kit: KitRecord }) {
 
       <article className="rounded-md border border-line bg-white p-5">
         <p className="text-sm font-bold text-calm">Lock-screen Card</p>
+        <p className="mt-2 text-sm leading-6 text-gray-600">
+          这张卡适合复制到锁屏备注、手机小组件或 Medical ID 的简短说明里。
+        </p>
         <p className="mt-4 text-2xl font-semibold leading-9 text-ink">{lockScreenText(kit)}</p>
         <p className="mt-5 text-sm text-gray-500">Last updated: {updatedDate(kit)}</p>
         <div className="mt-4">
@@ -70,6 +76,9 @@ export function SharedKitView({ kit }: { kit: KitRecord }) {
         {cards.map((card) => (
           <div className="space-y-2" key={card.id}>
             <CardPreview card={card} kit={kit} />
+            <p className="text-sm leading-6 text-gray-600">
+              复制后可保存到备忘录、发给可信联系人，或在紧急情况下直接展示给对方看。
+            </p>
             <CopyButton text={`${card.title}\n${card.english}\n${card.chinese}${card.disclaimer ? `\n${card.disclaimer}` : ""}`} />
           </div>
         ))}

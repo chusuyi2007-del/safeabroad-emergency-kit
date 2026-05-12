@@ -34,6 +34,9 @@ export function BulkVoiceIntake({
           <p className="mt-2 text-sm leading-6 text-gray-600">
             可以直接说完整情况，例如姓名、学校、住址、过敏、用药和联系人。系统会先自动分类，再让你确认。
           </p>
+          <p className="mt-2 text-sm leading-6 text-gray-600">
+            示例：我的英文名是 Lina Wang，学校是 UCLA，住在 330 De Neve Drive，房间 405，过敏是花生，当前用药是 Zyrtec 10 mg once daily。
+          </p>
         </div>
         <VoiceInputButton label="开始整段语音输入" onText={appendText} />
       </div>
@@ -47,6 +50,9 @@ export function BulkVoiceIntake({
         placeholder="也可以把语音转写内容粘贴到这里，然后让系统分类。"
         value={text}
       />
+      <p className="mt-2 text-xs leading-5 text-gray-500">
+        自动分类是辅助功能。写入后请在下面字段里逐项检查，重要信息还需要 double check。
+      </p>
 
       {reviewOpen ? (
         <div className="mt-4 rounded-md border border-amber-200 bg-[#fff8e8] p-4">
@@ -72,7 +78,9 @@ export function BulkVoiceIntake({
                 ))}
               </div>
             ) : (
-              <p className="mt-2 text-sm text-gray-600">暂时没有识别出明确字段。</p>
+              <p className="mt-2 text-sm leading-6 text-gray-600">
+                暂时没有识别出明确字段。可以改成“学校是…”“地址是…”“当前用药是…”这种更明确的句式再试。
+              </p>
             )}
           </div>
 
