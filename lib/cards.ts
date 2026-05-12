@@ -27,6 +27,9 @@ export function buildCards(kit: KitRecord): EmergencyCard[] {
     kit.student.usContactName.trim() || kit.parent.familyContactName.trim() || "my emergency contact";
   const contactPhone =
     kit.student.usContactPhone.trim() || kit.parent.familyContactPhone.trim() || "my emergency contact phone";
+  const dosage = orFallback(kit.student.medicationDosage, "Not provided");
+  const schedule = orFallback(kit.student.medicationSchedule, "Not provided");
+  const appearance = orFallback(kit.student.medicationAppearance, "Not provided");
 
   return [
     {
@@ -47,7 +50,9 @@ export function buildCards(kit: KitRecord): EmergencyCard[] {
       english: `I need a Mandarin medical interpreter. My allergies are: ${detailText(
         kit.parent.allergies,
         "No known allergies"
-      )}. My current medications are: ${detailText(kit.student.medications)}. My medical history is: ${detailText(
+      )}. My current medications are: ${detailText(
+        kit.student.medications
+      )}. Medication dosage: ${dosage}. Medication schedule: ${schedule}. Medication appearance notes: ${appearance}. My medical history is: ${detailText(
         kit.parent.conditions
       )}. My surgeries are: ${detailText(kit.parent.surgeries)}. My past ER or urgent care history is: ${orFallback(
         kit.parent.erHistory,

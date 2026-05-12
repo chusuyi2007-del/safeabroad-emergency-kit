@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/Button";
 import { DetailChoiceField, Field } from "@/components/Field";
+import { MedicationVisualGuide } from "@/components/MedicationVisualGuide";
 import { Notice } from "@/components/Notice";
 import { Progress } from "@/components/Progress";
 import { Shell } from "@/components/Shell";
@@ -58,6 +59,18 @@ export default function StudentFormPage({ params }: { params: { token: string } 
           <Field label="楼层/房间" onChange={(value) => update({ floorRoom: value })} value={student.floorRoom} />
           <Field label="附近地标" onChange={(value) => update({ landmark: value })} value={student.landmark} />
           <DetailChoiceField label="当前用药 / Current medications" noneLabel="无 / None" onChange={(medications) => update({ medications })} value={student.medications} />
+          <section className="rounded-md border border-line bg-paper p-4">
+            <h2 className="text-lg font-bold text-ink">药品剂量与服用周期</h2>
+            <p className="mt-1 text-sm leading-6 text-gray-600">
+              只记录医生、药瓶标签或本人已知的信息。不确定请选择不确定或留空，不要猜。
+            </p>
+            <div className="mt-4 grid gap-4">
+              <Field label="药品剂量（例如 10 mg / 1 tablet）" onChange={(value) => update({ medicationDosage: value })} value={student.medicationDosage ?? ""} />
+              <Field label="服用频率/周期（例如 once daily / 每晚一次）" onChange={(value) => update({ medicationSchedule: value })} value={student.medicationSchedule ?? ""} />
+              <Field label="药品外观备注（颜色、形状、药瓶标签关键词，可选）" onChange={(value) => update({ medicationAppearance: value })} textarea value={student.medicationAppearance ?? ""} />
+            </div>
+          </section>
+          <MedicationVisualGuide />
           <Field label="美国紧急联系人姓名" onChange={(value) => update({ usContactName: value })} required value={student.usContactName} />
           <Field label="美国紧急联系人电话" onChange={(value) => update({ usContactPhone: value })} required value={student.usContactPhone} />
           <Field label="保险计划名称（可选，只写名称）" onChange={(value) => update({ insurancePlan: value })} value={student.insurancePlan ?? ""} />

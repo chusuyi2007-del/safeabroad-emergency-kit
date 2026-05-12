@@ -157,6 +157,33 @@ const fieldConfigs: FieldConfig[] = [
     getValue: (kit) => detailToText(kit.student.medications)
   },
   {
+    id: "medicationDosage",
+    label: "药品剂量",
+    section: "medical",
+    important: true,
+    source: "student",
+    status: "doctor_should_verify",
+    getValue: (kit) => kit.student.medicationDosage ?? ""
+  },
+  {
+    id: "medicationSchedule",
+    label: "服用频率/周期",
+    section: "medical",
+    important: true,
+    source: "student",
+    status: "doctor_should_verify",
+    getValue: (kit) => kit.student.medicationSchedule ?? ""
+  },
+  {
+    id: "medicationAppearance",
+    label: "药品外观备注",
+    section: "medical",
+    important: true,
+    source: "student",
+    status: "needs_student_confirmation",
+    getValue: (kit) => kit.student.medicationAppearance ?? ""
+  },
+  {
     id: "familyContact",
     label: "家庭紧急联系人",
     section: "contacts",

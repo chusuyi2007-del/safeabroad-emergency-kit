@@ -80,6 +80,24 @@ const classifiers: Array<{
     patterns: [/(?:用药|药物|吃药|medication|medicine)(?:是|有|:)?\s*([^。；;\n]+)/i]
   },
   {
+    fieldId: "medicationDosage",
+    label: "药品剂量",
+    reason: "识别到药品剂量",
+    patterns: [/(?:剂量|dosage|dose)(?:是|:)?\s*([^。；;\n]+)/i, /(\d+(?:\.\d+)?\s*(?:mg|mcg|g|ml|tablet|tablets|片|粒))/i]
+  },
+  {
+    fieldId: "medicationSchedule",
+    label: "服用频率/周期",
+    reason: "识别到服用频率或周期",
+    patterns: [/(?:频率|周期|多久一次|每天|每晚|每周|schedule|frequency)(?:是|:)?\s*([^。；;\n]+)/i]
+  },
+  {
+    fieldId: "medicationAppearance",
+    label: "药品外观备注",
+    reason: "识别到药品外观信息",
+    patterns: [/(?:药品外观|外观|颜色|形状|药瓶标签|appearance|color|shape|label)(?:是|:)?\s*([^。；;\n]+)/i]
+  },
+  {
     fieldId: "familyContact",
     label: "家庭紧急联系人",
     reason: "识别到家庭联系人",

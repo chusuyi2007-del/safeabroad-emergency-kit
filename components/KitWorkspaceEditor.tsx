@@ -6,6 +6,7 @@ import { Edit3 } from "lucide-react";
 import { Button } from "@/components/Button";
 import { BulkVoiceIntake } from "@/components/BulkVoiceIntake";
 import { DeleteKitButton } from "@/components/DeleteKitButton";
+import { MedicationVisualGuide } from "@/components/MedicationVisualGuide";
 import { Notice } from "@/components/Notice";
 import { VoiceInputButton } from "@/components/VoiceInputButton";
 import { saveKit } from "@/lib/kit-store";
@@ -242,6 +243,7 @@ export function KitWorkspaceEditor({ initialKit }: { initialKit: KitRecord }) {
               <FieldRow field={field} key={field.id} onChange={updateField} onDoubleCheck={updateDoubleCheck} />
             ))}
           </div>
+          {section === "medical" ? <MedicationVisualGuide /> : null}
         </section>
       ))}
 

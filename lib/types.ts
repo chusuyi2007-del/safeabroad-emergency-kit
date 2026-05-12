@@ -53,6 +53,9 @@ export type StudentInfo = {
   floorRoom: string;
   landmark: string;
   medications: DetailField;
+  medicationDosage?: string;
+  medicationSchedule?: string;
+  medicationAppearance?: string;
   usContactName: string;
   usContactPhone: string;
   insurancePlan?: string;
