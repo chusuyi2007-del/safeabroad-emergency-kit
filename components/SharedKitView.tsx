@@ -32,13 +32,13 @@ export function SharedKitView({ kit }: { kit: KitRecord }) {
 
   return (
     <div className="space-y-5">
-      <section className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm font-semibold leading-6 text-amber-950">
+      <section className="rounded-md border border-amber-200 bg-[#fff8e8] p-4 text-sm font-bold leading-6 text-amber-950 shadow-sm">
         This page may contain sensitive information. Only share with trusted people.
       </section>
 
-      <section className="rounded-md border border-line bg-white p-5">
-        <p className="text-sm font-semibold text-calm">只读共享页面</p>
-        <h1 className="mt-2 text-3xl font-bold leading-tight text-ink">
+      <section className="rounded-md border border-line bg-white p-5 shadow-sm ring-1 ring-white/70">
+        <p className="inline-flex rounded-md bg-mist px-3 py-1 text-sm font-bold text-calm">只读共享页面</p>
+        <h1 className="mt-4 text-3xl font-black leading-tight text-ink">
           {kit.parent.studentEnglishName || kit.parent.studentChineseName || "Emergency Kit"}
         </h1>
         <p className="mt-2 text-sm text-gray-600">Last updated: {updatedDate(kit)}</p>
@@ -57,10 +57,10 @@ export function SharedKitView({ kit }: { kit: KitRecord }) {
         </div>
       </section>
 
-      <article className="rounded-md border border-line bg-white p-5">
-        <p className="text-sm font-bold uppercase tracking-wide text-calm">Lock-screen Card</p>
+      <article className="rounded-md border border-line bg-ink p-5 text-white shadow-sm">
+        <p className="text-sm font-bold uppercase text-teal-100">Lock-screen Card</p>
         <p className="mt-4 text-2xl font-bold leading-9">{lockScreenText(kit)}</p>
-        <p className="mt-5 text-sm text-gray-500">Last updated: {updatedDate(kit)}</p>
+        <p className="mt-5 text-sm text-gray-300">Last updated: {updatedDate(kit)}</p>
         <div className="mt-4">
           <CopyButton text={lockScreenText(kit)} />
         </div>

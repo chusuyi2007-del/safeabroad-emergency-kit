@@ -4,12 +4,15 @@
 
 :root {
   color: #1f2933;
-  background: #fbfaf7;
+  background: #f6f3ed;
 }
 
 body {
   min-height: 100vh;
-  background: #fbfaf7;
+  background:
+    radial-gradient(circle at top left, rgba(8, 117, 111, 0.12), transparent 34rem),
+    linear-gradient(180deg, #fbfaf7 0%, #f6f3ed 44%, #efe9df 100%);
+  text-rendering: geometricPrecision;
 }
 
 button,
@@ -21,4 +24,8 @@ select {
 
 .card-export {
   background: #ffffff;
+}
+
+::selection {
+  background: rgba(8, 117, 111, 0.18);
 }

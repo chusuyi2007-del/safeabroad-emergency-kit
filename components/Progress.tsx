@@ -11,7 +11,7 @@ export function Progress({ parentComplete = false, studentComplete = false }: Pr
   ] as const;
 
   return (
-    <div className="grid gap-2 rounded-md border border-line bg-white p-3 sm:grid-cols-3">
+    <div className="grid gap-2 rounded-md border border-line bg-white/90 p-3 shadow-sm sm:grid-cols-3">
       {items.map(([label, done]) => (
         <div className="flex items-center gap-2 text-sm" key={label}>
           <span className={`h-3 w-3 rounded-full ${done ? "bg-calm" : "bg-line"}`} />

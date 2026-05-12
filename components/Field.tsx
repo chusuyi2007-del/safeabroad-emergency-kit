@@ -16,7 +16,7 @@ export function Field({
   placeholder?: string;
 }) {
   const className =
-    "mt-2 w-full rounded-md border border-line bg-white px-4 py-3 text-base outline-none focus:border-calm focus:ring-2 focus:ring-teal-100";
+    "mt-2 w-full rounded-md border border-line bg-white/95 px-4 py-3 text-base shadow-sm outline-none transition focus:border-calm focus:ring-4 focus:ring-teal-100";
 
   return (
     <label className="block">
@@ -67,7 +67,7 @@ export function DetailChoiceField({
       </div>
       {value.choice === "details" ? (
         <textarea
-          className="mt-2 min-h-24 w-full rounded-md border border-line bg-white px-4 py-3 outline-none focus:border-calm focus:ring-2 focus:ring-teal-100"
+          className="mt-2 min-h-24 w-full rounded-md border border-line bg-white/95 px-4 py-3 shadow-sm outline-none transition focus:border-calm focus:ring-4 focus:ring-teal-100"
           onChange={(event) => onChange({ ...value, details: event.target.value })}
           placeholder="请填写英文或中文细节 / Add details"
           value={value.details ?? ""}

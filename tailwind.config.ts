@@ -10,9 +10,12 @@ const config: Config = {
     extend: {
       colors: {
         ink: "#1f2933",
-        calm: "#0f766e",
-        paper: "#fbfaf7",
-        line: "#d7d3cb"
+        calm: "#08756f",
+        paper: "#f6f3ed",
+        line: "#ded8ce",
+        mist: "#eef7f4",
+        clay: "#b85c38",
+        ocean: "#315f72"
       }
     }
   },
