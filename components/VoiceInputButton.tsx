@@ -39,11 +39,13 @@ type SpeechWindow = Window & {
 export function VoiceInputButton({
   onText,
   language = "zh-CN",
-  compact = false
+  compact = false,
+  label = "语音输入"
 }: {
   onText: (text: string) => void;
   language?: string;
   compact?: boolean;
+  label?: string;
 }) {
   const [recognition, setRecognition] = useState<SpeechRecognitionLike | null>(null);
   const [listening, setListening] = useState(false);
@@ -100,7 +102,7 @@ export function VoiceInputButton({
       type="button"
     >
       {listening ? <Square className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-      {listening ? "停止录音" : "语音输入"}
+      {listening ? "停止录音" : label}
     </button>
   );
 }

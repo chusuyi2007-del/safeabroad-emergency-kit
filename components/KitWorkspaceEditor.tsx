@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Edit3 } from "lucide-react";
 import { Button } from "@/components/Button";
+import { BulkVoiceIntake } from "@/components/BulkVoiceIntake";
 import { DeleteKitButton } from "@/components/DeleteKitButton";
 import { Notice } from "@/components/Notice";
 import { VoiceInputButton } from "@/components/VoiceInputButton";
 import { saveKit } from "@/lib/kit-store";
 import type { FieldStatus, KitRecord, WorkspaceField } from "@/lib/types";
+import type { VoiceSuggestion } from "@/lib/voice-classifier";
 import {
   completionPercent,
   ensureWorkspace,
@@ -148,6 +150,27 @@ export function KitWorkspaceEditor({ initialKit }: { initialKit: KitRecord }) {
     setKit((current) => toggleDoubleCheck(current, fieldId, checked));
   }
 
+  function applyVoiceSuggestions(suggestions: VoiceSuggestion[]) {
+    setSaved(false);
+    setKit((current) =>
+      suggestions.reduce((next, suggestion) => {
+        const field = next.workspace.fields[suggestion.fieldId];
+        const status: FieldStatus =
+          field?.source === "parent" ? "needs_parent_confirmation" : "needs_student_confirmation";
+        const value =
+          field?.value?.trim() && field.value.trim() !== suggestion.value.trim()
+            ? `${field.value.trim()} / 语音补充: ${suggestion.value.trim()}`
+            : suggestion.value;
+
+        return updateWorkspaceField(next, suggestion.fieldId, {
+          value,
+          source: "unknown",
+          status
+        });
+      }, current)
+    );
+  }
+
   async function save() {
     const next = await saveKit(kit);
     setKit(next);
@@ -206,6 +229,8 @@ export function KitWorkspaceEditor({ initialKit }: { initialKit: KitRecord }) {
       </section>
 
       <Notice />
+
+      <BulkVoiceIntake fields={kit.workspace.fields} onApply={applyVoiceSuggestions} />
 
       {(["basic", "location", "medical", "contacts", "rights"] as const).map((section) => (
         <section className="space-y-3" key={section}>
