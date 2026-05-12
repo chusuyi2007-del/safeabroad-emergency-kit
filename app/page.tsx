@@ -1,28 +1,25 @@
 import { Button } from "@/components/Button";
 import { Notice } from "@/components/Notice";
 import { Shell } from "@/components/Shell";
-import { ClipboardCheck, Link2, MessageCircle, Printer } from "lucide-react";
 
 export default function LandingPage() {
   const steps = [
-    ["家长先填", "家长补充姓名、医疗史和家庭联系人。", ClipboardCheck],
-    ["学生确认", "学生打开链接补充学校、位置和本地联系人。", Link2],
-    ["共同维护", "双方在共享工作区确认、标记不确定或请求对方核实。", MessageCircle],
-    ["导出备用", "生成英文应急卡、只读页面、PNG 和 PDF。", Printer]
+    ["1", "家长先填", "姓名、家庭联系人、已知医疗史"],
+    ["2", "学生补充", "美国电话、学校、住址、本地联系人"],
+    ["3", "一起确认", "标记已确认、不确定、需要谁确认"],
+    ["4", "导出备用", "只读页面、PNG、PDF、钱包卡"]
   ] as const;
 
   return (
     <Shell>
-      <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-        <div className="py-4 sm:py-10">
-          <p className="inline-flex rounded-md border border-teal-100 bg-mist px-3 py-1 text-sm font-bold text-calm">
-            中国留学生家庭应急准备
-          </p>
-          <h1 className="mt-5 max-w-3xl text-4xl font-black leading-tight text-ink sm:text-6xl">
-            让家长和学生一起维护一份安心应急包
+      <section className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+        <div className="py-2 sm:py-8">
+          <p className="text-sm font-bold text-calm">中国留学生家庭应急准备</p>
+          <h1 className="mt-4 max-w-2xl text-4xl font-bold leading-tight text-ink sm:text-5xl">
+            家长和学生共用的一份应急信息清单
           </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-gray-700">
-            SafeAbroad 把家庭知道的信息、学生在美国本地的信息合并成一个共享工作区，再生成英文应急卡片和中文说明。
+          <p className="mt-5 max-w-xl text-lg leading-8 text-gray-700">
+            SafeAbroad 用来整理紧急联系人、住址、医疗沟通信息和几张常用英文应急卡。它是准备工具，不是医疗或法律服务。
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <Button href="/parent/start">开始创建应急包</Button>
@@ -31,24 +28,57 @@ export default function LandingPage() {
             </Button>
           </div>
         </div>
-        <div className="rounded-md border border-white/70 bg-white/85 p-4 shadow-sm ring-1 ring-line/50 backdrop-blur">
-          <div className="rounded-md bg-ink p-5 text-white">
-            <p className="text-sm font-semibold text-teal-100">Emergency card preview</p>
-            <p className="mt-4 text-2xl font-black leading-9">
-              I need help. I need a Mandarin interpreter.
-            </p>
-            <p className="mt-5 border-t border-white/20 pt-4 text-sm leading-6 text-gray-200">
-              给 911、急诊、学校或可信联系人看的英文应急表达。每张卡都显示最后更新时间。
-            </p>
+
+        <div className="rounded-md border border-line bg-white p-4 shadow-sm">
+          <div className="border-b border-line pb-4">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-bold text-ink">共享工作区示例</p>
+                <p className="mt-1 text-sm text-gray-500">Emergency Kit for Student</p>
+              </div>
+              <span className="rounded-md border border-teal-200 bg-mist px-3 py-1 text-sm font-bold text-calm">64%</span>
+            </div>
           </div>
-          <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            {steps.map(([title, body, Icon]) => (
-              <div className="rounded-md border border-line bg-paper p-4" key={title}>
-                <Icon className="h-5 w-5 text-calm" />
-                <h2 className="mt-3 font-bold text-ink">{title}</h2>
-                <p className="mt-1 text-sm leading-6 text-gray-600">{body}</p>
+
+          <div className="mt-4 space-y-3">
+            {[
+              ["学生英文名", "已确认", "parent"],
+              ["宿舍/公寓地址", "需要学生确认", "student"],
+              ["当前用药", "建议医生核实", "student"],
+              ["家庭紧急联系人", "已确认", "parent"]
+            ].map(([label, status, source]) => (
+              <div className="grid grid-cols-[1fr_auto] gap-3 rounded-md border border-line bg-paper px-3 py-3" key={label}>
+                <div>
+                  <p className="font-semibold text-ink">{label}</p>
+                  <p className="mt-1 text-xs text-gray-500">来源：{source}</p>
+                </div>
+                <p className="self-center rounded-md bg-white px-2 py-1 text-xs font-bold text-gray-700">{status}</p>
               </div>
             ))}
+          </div>
+
+          <div className="mt-5 border-t border-line pt-4">
+            <p className="text-sm font-bold text-ink">流程</p>
+            <div className="mt-3 grid gap-2">
+              {steps.map(([number, title, body]) => (
+                <div className="grid grid-cols-[2rem_1fr] gap-3 text-sm" key={title}>
+                  <span className="flex h-8 w-8 items-center justify-center rounded-md border border-line bg-white font-bold text-calm">
+                    {number}
+                  </span>
+                  <div>
+                    <p className="font-bold text-ink">{title}</p>
+                    <p className="mt-1 leading-6 text-gray-600">{body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 rounded-md border border-line bg-white p-4">
+              <p className="text-sm font-bold text-ink">911 Card</p>
+              <p className="mt-2 text-base font-semibold leading-7 text-gray-800">
+                I need help. I need a Mandarin interpreter.
+              </p>
+              <p className="mt-2 text-xs text-gray-500">Last updated: May 12, 2026</p>
+            </div>
           </div>
         </div>
       </section>

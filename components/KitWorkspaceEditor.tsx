@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { CheckCircle2, Clock3, Edit3, FileText, LockKeyhole, MessageSquareWarning } from "lucide-react";
+import { Edit3 } from "lucide-react";
 import { Button } from "@/components/Button";
 import { DeleteKitButton } from "@/components/DeleteKitButton";
 import { Notice } from "@/components/Notice";
@@ -33,13 +33,6 @@ function statusTone(status: FieldStatus) {
   return "border-sky-200 bg-sky-50 text-ocean";
 }
 
-function sectionIcon(section: WorkspaceField["section"]) {
-  if (section === "medical") return MessageSquareWarning;
-  if (section === "rights") return LockKeyhole;
-  if (section === "contacts") return CheckCircle2;
-  return FileText;
-}
-
 function FieldRow({
   field,
   onChange
@@ -50,7 +43,7 @@ function FieldRow({
   const [editing, setEditing] = useState(false);
 
   return (
-    <div className="rounded-md border border-line bg-white/95 p-4 shadow-sm ring-1 ring-white/70">
+    <div className="rounded-md border border-line bg-white p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
@@ -139,50 +132,42 @@ export function KitWorkspaceEditor({ initialKit }: { initialKit: KitRecord }) {
 
   return (
     <div className="space-y-7">
-      <section className="overflow-hidden rounded-md border border-white/70 bg-white shadow-sm ring-1 ring-line/50">
-        <div className="bg-ink px-5 py-5 text-white sm:px-6">
-          <p className="text-sm font-bold text-teal-100">共享应急包工作区</p>
-          <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <section className="rounded-md border border-line bg-white p-5 shadow-sm">
+        <p className="text-sm font-bold text-calm">共享应急包工作区</p>
+        <div className="mt-3 grid gap-5 lg:grid-cols-[1fr_16rem]">
           <div>
-            <h1 className="text-3xl font-black leading-tight sm:text-4xl">
+            <h1 className="text-3xl font-bold leading-tight text-ink">
               {kit.parent.studentChineseName || kit.parent.studentEnglishName || "学生"} 的 Emergency Kit
             </h1>
-            <p className="mt-2 inline-flex items-center gap-2 text-sm text-gray-300">
-              <Clock3 className="h-4 w-4" />
+            <p className="mt-2 text-sm text-gray-500">
               Last updated: {new Date(kit.updatedAt).toLocaleDateString("en-US")}
             </p>
           </div>
-            <div className="min-w-52 rounded-md border border-white/10 bg-white/10 p-4">
-              <p className="text-sm font-bold text-teal-100">完成度 {progress}%</p>
-              <div className="mt-2 h-3 rounded-full bg-white/15">
-                <div className="h-3 rounded-full bg-teal-200" style={{ width: `${progress}%` }} />
-              </div>
+          <div className="rounded-md border border-line bg-paper p-4">
+            <div className="flex items-center justify-between text-sm font-bold">
+              <span className="text-gray-700">完成度</span>
+              <span className="text-calm">{progress}%</span>
+            </div>
+            <div className="mt-3 h-2 rounded-full bg-gray-200">
+              <div className="h-2 rounded-full bg-calm" style={{ width: `${progress}%` }} />
             </div>
           </div>
         </div>
-        <div className="p-5 sm:p-6">
-        <div className="rounded-md border border-line bg-paper p-4 text-sm font-semibold leading-6 text-gray-700">
-          {missing.length ? (
-            <p>缺少必填信息：{missing.map((field) => field.label).join("、")}</p>
-          ) : (
-            <p>必填信息已齐全。仍建议学生、家长和医生分别确认相关内容。</p>
-          )}
-        </div>
-        </div>
+        <div className="mt-5 rounded-md border border-line bg-paper p-4 text-sm font-semibold leading-6 text-gray-700">
+            {missing.length ? (
+              <p>缺少必填信息：{missing.map((field) => field.label).join("、")}</p>
+            ) : (
+              <p>必填信息已齐全。仍建议学生、家长和医生分别确认相关内容。</p>
+            )}
+          </div>
       </section>
 
       <Notice />
 
       {(["basic", "location", "medical", "contacts", "rights"] as const).map((section) => (
         <section className="space-y-3" key={section}>
-          <div className="flex items-center gap-3">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-white text-calm shadow-sm ring-1 ring-line">
-              {(() => {
-                const Icon = sectionIcon(section);
-                return <Icon className="h-5 w-5" />;
-              })()}
-            </span>
-            <h2 className="text-2xl font-black text-ink">{sectionLabels[section]}</h2>
+          <div className="border-b border-line pb-2">
+            <h2 className="text-xl font-bold text-ink">{sectionLabels[section]}</h2>
           </div>
           <div className="grid gap-3">
             {grouped[section].map((field) => (
@@ -192,8 +177,8 @@ export function KitWorkspaceEditor({ initialKit }: { initialKit: KitRecord }) {
         </section>
       ))}
 
-      <section className="rounded-md border border-line bg-white/95 p-5 shadow-sm ring-1 ring-white/70">
-        <h2 className="text-2xl font-black text-ink">隐私与安全</h2>
+      <section className="rounded-md border border-line bg-white p-5">
+        <h2 className="text-xl font-bold text-ink">隐私与安全</h2>
         <div className="mt-3 space-y-2 text-sm leading-6 text-gray-700">
           <p>导出或保存后，可以删除所有 kit 数据。</p>
           <p>共享只应发给可信任的人。请不要填写护照、I-20、SSN 或完整保险号码。</p>
@@ -205,7 +190,7 @@ export function KitWorkspaceEditor({ initialKit }: { initialKit: KitRecord }) {
         </div>
       </section>
 
-      <div className="rounded-md border border-line bg-white/90 p-4 shadow-sm ring-1 ring-white/70">
+      <div className="rounded-md border border-line bg-white p-4">
         <p className="mb-3 text-sm font-bold text-gray-600">工作区操作</p>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Button onClick={save}>{saved ? "已保存" : "保存工作区更新"}</Button>
